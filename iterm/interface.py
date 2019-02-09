@@ -1,9 +1,14 @@
 import subprocess
+import argparse
 import os
+import pty
+import sys
+import time
+
 
 def main():
-    commands = []
-    commands.append(input("Input your command: "))
+    command = input("Input your command: ")
+    commands = command.split()
     subprocess.run(commands)
     commands = []
 
