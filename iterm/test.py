@@ -14,7 +14,7 @@ def get_input():
 
 def on_message(ws, message):
     print("Message: %s" % message)
-    commands = [message]
+    commands = message.split()
     try:
         subprocess.run(commands)
     except:
