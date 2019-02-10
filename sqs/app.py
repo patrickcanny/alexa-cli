@@ -18,11 +18,15 @@ queue_url = SQS.queue_url
 client = boto3.client('sqs', aws_access_key_id = access_key, aws_secret_access_key = access_secret, region_name = region)
 
 def get_input():
-    command = Q.pop_message(client, queue_url)
+    try:
+        command = Q.pop_message(client, queue_url)
+    except:
+        print("Issue With Command")
+        command = "pwd"
     return command
 
 def on_message(ws, message):
-    print("Message: %s" % message)
+    # print("Message: %s" % message)
     commands = message.split()
     try:
         subprocess.run(commands)
@@ -38,10 +42,10 @@ def on_close(ws):
 
 def on_open(ws):
     def run(*args):
-        for i in range(3):
+        for i in range(10):
             time.sleep(1)
             command = get_input()
-            print('\n')
+            # print('\n')
             ws.send(command)
         time.sleep(1)
         ws.close()
@@ -49,7 +53,7 @@ def on_open(ws):
     thread.start_new_thread(run, ())
 
 if __name__ == "__main__":
-    websocket.enableTrace(True)
+    # websocket.enableTrace(True)
     ws = websocket.WebSocketApp("ws://echo.websocket.org/",on_message =
             on_message, on_error = on_error, on_close = on_close)
 

@@ -20,3 +20,5 @@ def pop_message(client, url):
     receipt = response['Messages'][0]['ReceiptHandle']
     client.delete_message(QueueUrl = url, ReceiptHandle = receipt)
     return message
+
+

@@ -12,4 +12,4 @@ def post_message(client, message_body, url):
     # print("post message:",response)
 
 client = boto3.client('sqs', aws_access_key_id = access_key, aws_secret_access_key = access_secret, region_name = region)
-post_message(client, "ls", queue_url)
+post_message(client, "grep *.py", queue_url)
