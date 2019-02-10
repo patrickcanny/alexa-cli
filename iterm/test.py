@@ -1,7 +1,5 @@
-import argparse
 import subprocess
 import os
-import pty
 import sys
 import time
 import websocket
@@ -17,8 +15,11 @@ def get_input():
 def on_message(ws, message):
     print("Message: %s" % message)
     commands = [message]
-    subprocess.run(commands)
-    ws.close()
+    try:
+        subprocess.run(commands)
+    except:
+        print('Command Error')
+    print('\n')
 
 def on_error(ws, error):
     print(error)
@@ -28,8 +29,13 @@ def on_close(ws):
 
 def on_open(ws):
     def run(*args):
-        command = get_input()
-        ws.send(command)
+        for i in range(3):
+            time.sleep(1)
+            command = get_input()
+            print('\n')
+            ws.send(command)
+        time.sleep(1)
+        ws.close()
 
     thread.start_new_thread(run, ())
 
@@ -40,23 +46,3 @@ if __name__ == "__main__":
 
     ws.on_open = on_open
     ws.run_forever()
-
-# parser = argparse.ArgumentParser()
-# parser.add_argument('-a', dest='append', action='store_true')
-# parser.add_argument('-p', dest='use_python', action='store_true')
-# parser.add_argument('filename', nargs='?', default='typescript_2')
-# options = parser.parse_args()
-# filename = options.filename
-# mode = 'ab' if options.append else 'wb'
-
-
-
-# # pty stuff
-# with open(filename, mode) as script:
-#     print('Script started, file is',filename)
-#     script.write(('Script started on %s\n' % time.asctime()).encode())
-#     ws = create_connection('ws://echo.websocket.org/')
-#     ws.send('bash-3.2$ echo "Hello, World"\n')
-#     pty.spawn(shell, read)
-#     script.write(('Script done on %s\n' % time.asctime()).encode())
-#     print('Script done, file is', filename)
