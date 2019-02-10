@@ -3,13 +3,22 @@ import os
 import sys
 import time
 import websocket
+import queue_service as Q
+import boto3
+from config import SQS
 try:
     import thread
 except ImportError:
     import _thread as thread
 
+access_key = SQS.access_key
+access_secret = SQS.access_secret
+region = SQS.region
+queue_url = SQS.queue_url
+client = boto3.client('sqs', aws_access_key_id = access_key, aws_secret_access_key = access_secret, region_name = region)
+
 def get_input():
-    command = input("What is your command? ")
+    command = Q.pop_message(client, queue_url)
     return command
 
 def on_message(ws, message):
